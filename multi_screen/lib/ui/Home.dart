@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:multi_screen/ui/next_screen.dart';
 
@@ -29,12 +31,10 @@ class _HomeState extends State<Home> {
           new ListTile(
             title: new RaisedButton(
               onPressed: () {
-                debugPrint("Sending \"${_nameFieldController.text}\"");
-                var router =
-                    new MaterialPageRoute(builder: (BuildContext context) {
-                  return new NextScreen(name: _nameFieldController.text);
+//                openNextScreen(context);
+                _goToNextScreen(context).then((length) {
+                  debugPrint("Input length was $length");
                 });
-                Navigator.of(context).push(router);
               },
               child: new Text("Send to Next Screen"),
             ),
@@ -42,5 +42,40 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
+  }
+
+  void openNextScreen(BuildContext context) {
+    debugPrint("Sending \"${_nameFieldController.text}\"");
+
+    // Create a page route
+    // MaterialPageRoute is a Route that handles transitions to the new screen
+    // using platform-specific animations
+    var router = new MaterialPageRoute(
+      builder: (BuildContext context) {
+        // Create route content widget
+        // Pass necessary data with constructor
+        return new NextScreen(name: _nameFieldController.text);
+      },
+    );
+
+    Navigator.of(context).push(router);
+    // Navigator.push will add a Route to the stack of routes managed by the Navigator
+  }
+
+  Future _goToNextScreen(BuildContext context) async {
+    // We expect Map of results from the next screen
+    // This will return data from the next screen, passed in Navigator.pop(context,<data map>)
+    Map results = await Navigator.of(context).push(new MaterialPageRoute<Map>(
+      builder: (BuildContext context) {
+        return new NextScreen(name: _nameFieldController.text);
+      },
+    ));
+    return new Future<int>(() {
+      if (results == null) {
+        return null;
+      } else {
+        return results["info"];
+      }
+    });
   }
 }

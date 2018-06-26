@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:klimatic/ui/home.dart';
+import 'package:klimatic/ui/klimatic.dart';
 
 void main() {
 
   return runApp(new MaterialApp(
     title: "Klimatic",
-    home: new Home(),
+    home: new Klimatic(),
   ));
 }
